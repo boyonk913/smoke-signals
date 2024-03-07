@@ -31,7 +31,7 @@ public class SmokeSignalsClient implements ClientModInitializer {
 		@Override
 		public Particle createParticle(ColoredSmokeParticleEffect parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
 			CampfireSmokeParticle particle = new CampfireSmokeParticle(world, x, y, z, velocityX, velocityY, velocityZ, true);
-			particle.setAlpha(0.95f);
+			particle.setColorAlpha(0.95f);
 			particle.setMaxAge(world.getRandom().nextInt(50) + parameters.maxAge());
 			particle.setColor(parameters.color().getX(), parameters.color().getY(), parameters.color().getZ());
 			particle.setSprite(this.spriteProvider);

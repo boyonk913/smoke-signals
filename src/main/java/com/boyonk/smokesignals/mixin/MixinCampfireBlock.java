@@ -8,13 +8,14 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Random;
 
 @Mixin(CampfireBlock.class)
 public class MixinCampfireBlock {
@@ -34,7 +35,7 @@ public class MixinCampfireBlock {
 		}
 	}
 
-	@Inject(method = "isSignalFireBaseBlock", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "doesBlockCauseSignalFire", at = @At("HEAD"), cancellable = true)
 	void smokesignals$isSignalFireBaseBlock(BlockState state, CallbackInfoReturnable<Boolean> cir) {
 		ParticleEffect particle = SmokeSignals.getSmoke(state);
 		cir.setReturnValue(particle != null && ((particle instanceof ColoredSmokeParticleEffect coloredSmoke && coloredSmoke.maxAge() >= 280) || particle == ParticleTypes.CAMPFIRE_SIGNAL_SMOKE));
