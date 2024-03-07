@@ -33,7 +33,7 @@ public class SmokeSignalsClient implements ClientModInitializer {
 			CampfireSmokeParticle particle = new CampfireSmokeParticle(world, x, y, z, velocityX, velocityY, velocityZ, true);
 			particle.setAlpha(0.95f);
 			particle.setMaxAge(world.getRandom().nextInt(50) + parameters.maxAge());
-			particle.setColor(parameters.color().x, parameters.color().y, parameters.color().z);
+			particle.setColor(parameters.color().getX(), parameters.color().getY(), parameters.color().getZ());
 			particle.setSprite(this.spriteProvider);
 			return particle;
 		}
