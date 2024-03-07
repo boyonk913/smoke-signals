@@ -9,24 +9,22 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.AbstractDustParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
-import net.minecraft.registry.Registries;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.dynamic.Codecs;
-import org.joml.Vector3f;
+import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.registry.Registry;
 
 import java.util.Locale;
 
-public record ColoredSmokeParticleEffect(Vector3f color, int maxAge) implements ParticleEffect {
+public record ColoredSmokeParticleEffect(Vec3f color, int maxAge) implements ParticleEffect {
 
 	public ColoredSmokeParticleEffect(DyeColor color, int maxAge) {
-		this(new Vector3f(color.getColorComponents()[0],color.getColorComponents()[1],color.getColorComponents()[2]), maxAge);
+		this(new Vec3f(color.getColorComponents()[0], color.getColorComponents()[1], color.getColorComponents()[2]), maxAge);
 	}
-
 
 
 	public static final Codec<ColoredSmokeParticleEffect> CODEC = RecordCodecBuilder.create(instance ->
 			instance.group(
-					Codecs.VECTOR_3F
+					Vec3f.CODEC
 							.fieldOf("color")
 							.forGetter(ColoredSmokeParticleEffect::color),
 					Codec.INT
@@ -39,7 +37,7 @@ public record ColoredSmokeParticleEffect(Vector3f color, int maxAge) implements 
 
 		@Override
 		public ColoredSmokeParticleEffect read(ParticleType<ColoredSmokeParticleEffect> type, StringReader reader) throws CommandSyntaxException {
-			Vector3f color = AbstractDustParticleEffect.readColor(reader);
+			Vec3f color = AbstractDustParticleEffect.readColor(reader);
 			reader.expect(' ');
 			int maxAge = reader.readInt();
 
@@ -59,15 +57,15 @@ public record ColoredSmokeParticleEffect(Vector3f color, int maxAge) implements 
 
 	@Override
 	public void write(PacketByteBuf buf) {
-		buf.writeFloat(this.color.x());
-		buf.writeFloat(this.color.y());
-		buf.writeFloat(this.color.z());
+		buf.writeFloat(this.color.getX());
+		buf.writeFloat(this.color.getY());
+		buf.writeFloat(this.color.getZ());
 		buf.writeVarInt(this.maxAge);
 	}
 
 	@Override
 	public String asString() {
-		return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %s", Registries.PARTICLE_TYPE.getId(this.getType()), this.color.x(), this.color.y(), this.color.z(), this.maxAge);
+		return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %s", Registry.PARTICLE_TYPE.getId(this.getType()), this.color.getX(), this.color.getY(), this.color.getZ(), this.maxAge);
 	}
 
 

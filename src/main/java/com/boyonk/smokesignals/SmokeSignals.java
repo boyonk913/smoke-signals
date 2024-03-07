@@ -18,13 +18,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PathUtil;
-import net.minecraft.util.Util;
-import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +39,7 @@ public class SmokeSignals implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Smoke Signals");
 	public static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
 
-	public static final Codec<Map<Block, ParticleEffect>> MAP_CODEC = Codecs.validate(Codec.unboundedMap(Registries.BLOCK.getCodec(), ParticleTypes.TYPE_CODEC), map -> map.isEmpty() ? DataResult.error(() -> "Map can't be empty!") : DataResult.success(map));
+	public static final Codec<Map<Block, ParticleEffect>> MAP_CODEC = Codec.unboundedMap(Registry.BLOCK.getCodec(), ParticleTypes.TYPE_CODEC);
 	private static Map<Block, ParticleEffect> BLOCK_TO_SMOKE = createDefaultMap();
 
 	public static final ParticleType<ColoredSmokeParticleEffect> COLORED_CAMPFIRE_SMOKE = new ParticleType<>(true, ColoredSmokeParticleEffect.PARAMETERS_FACTORY) {
@@ -56,7 +52,7 @@ public class SmokeSignals implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.PARTICLE_TYPE, new Identifier(NAMESPACE, "colored_campfire_smoke"), COLORED_CAMPFIRE_SMOKE);
+		Registry.register(Registry.PARTICLE_TYPE, new Identifier(NAMESPACE, "colored_campfire_smoke"), COLORED_CAMPFIRE_SMOKE);
 
 		Path path = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE + ".json");
 
@@ -65,7 +61,8 @@ public class SmokeSignals implements ModInitializer {
 				reader.setLenient(false);
 				JsonElement json = Streams.parse(reader);
 
-				BLOCK_TO_SMOKE = Util.getResult(MAP_CODEC.parse(JsonOps.INSTANCE, json), JsonParseException::new);
+				DataResult<Map<Block, ParticleEffect>> result = MAP_CODEC.parse(JsonOps.INSTANCE, json);
+				result.resultOrPartial((error) -> LOGGER.error("Couldn't parse config {}", path.getFileName(), new JsonParseException(error))).ifPresent(map -> BLOCK_TO_SMOKE = map);
 			} catch (JsonParseException exception) {
 				LOGGER.error("Couldn't parse config {}", path.getFileName(), exception);
 			} catch (IOException exception) {
@@ -73,9 +70,9 @@ public class SmokeSignals implements ModInitializer {
 			}
 		} else {
 			try {
-				PathUtil.createDirectories(path.getParent());
+				Files.createDirectories(path.getParent());
 				try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-					GSON.toJson(Util.getResult(MAP_CODEC.encodeStart(JsonOps.INSTANCE, BLOCK_TO_SMOKE), IOException::new), writer);
+					MAP_CODEC.encodeStart(JsonOps.INSTANCE, BLOCK_TO_SMOKE).resultOrPartial(error -> LOGGER.error("Failed to save config {}", path, new IOException(error))).ifPresent(json -> GSON.toJson(json, writer));
 				}
 			} catch (IOException exception) {
 				LOGGER.error("Failed to save config {}", path, exception);
