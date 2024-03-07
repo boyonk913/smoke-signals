@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "smoke_signals",
+  "version": "${version}",
+  "name": "Smoke Signals",
+  "description": "Introduce coloured smoke to signal to your friends across vast landscapes! Revolutionize long-distance communication.",
+  "authors": [
+    "boyonk"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/smoke-signals",
+    "issues": "https://github.com/boyonk913/smoke-signals/issues",
+    "sources": "https://github.com/boyonk913/smoke-signals"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/smoke_signals/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.boyonk.smokesignals.client.SmokeSignalsClient"
+    ],
+    "main": [
+      "com.boyonk.smokesignals.SmokeSignals"
+    ]
+  },
+  "accessWidener": "smoke_signals.accesswidener",
+  "mixins": [
+    "smoke_signals.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": ">=${minecraft_version}"
+  }
+}

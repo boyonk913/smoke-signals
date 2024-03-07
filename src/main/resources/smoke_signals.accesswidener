@@ -1,0 +1,3 @@
+accessWidener v1 named
+accessible method net/minecraft/client/particle/CampfireSmokeParticle <init> (Lnet/minecraft/client/world/ClientWorld;DDDDDDZ)V
+accessible method net/minecraft/client/particle/Particle setAlpha (F)V
