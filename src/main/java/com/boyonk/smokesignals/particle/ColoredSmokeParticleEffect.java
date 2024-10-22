@@ -11,12 +11,13 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
 
 public record ColoredSmokeParticleEffect(Vector3f color, int maxAge) implements ParticleEffect {
 
 	public ColoredSmokeParticleEffect(DyeColor color, int maxAge) {
-		this(new Vector3f(color.getColorComponents()[0], color.getColorComponents()[1], color.getColorComponents()[2]), maxAge);
+		this(Vec3d.unpackRgb(color.getEntityColor()).toVector3f(), maxAge);
 	}
 
 

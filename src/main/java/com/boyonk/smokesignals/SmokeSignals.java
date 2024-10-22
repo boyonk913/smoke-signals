@@ -71,7 +71,7 @@ public class SmokeSignals implements ModInitializer {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> ServerPlayNetworking.send(handler.player, new SyncParticlesS2CPacket(blockToSmoke)));
 
 
-		Registry.register(Registries.PARTICLE_TYPE, new Identifier(NAMESPACE, "colored_campfire_smoke"), COLORED_CAMPFIRE_SMOKE);
+		Registry.register(Registries.PARTICLE_TYPE, Identifier.of(NAMESPACE, "colored_campfire_smoke"), COLORED_CAMPFIRE_SMOKE);
 
 		Path path = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE + ".json");
 

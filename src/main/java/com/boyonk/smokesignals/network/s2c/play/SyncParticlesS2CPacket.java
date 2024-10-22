@@ -16,7 +16,7 @@ import java.util.Map;
 
 public record SyncParticlesS2CPacket(Map<Block, ParticleEffect> map) implements CustomPayload {
 
-	public static final Id<SyncParticlesS2CPacket> ID = new Id<>(new Identifier(SmokeSignals.NAMESPACE, "sync_particles"));
+	public static final Id<SyncParticlesS2CPacket> ID = new Id<>(Identifier.of(SmokeSignals.NAMESPACE, "sync_particles"));
 	private static final PacketCodec<RegistryByteBuf, Map<Block, ParticleEffect>> MAP_PACKET_CODEC = PacketCodecs.map(Object2ObjectArrayMap::new, PacketCodecs.registryValue(RegistryKeys.BLOCK), ParticleTypes.PACKET_CODEC);
 	public static final PacketCodec<RegistryByteBuf, SyncParticlesS2CPacket> CODEC = MAP_PACKET_CODEC.xmap(SyncParticlesS2CPacket::new, SyncParticlesS2CPacket::map);
 
